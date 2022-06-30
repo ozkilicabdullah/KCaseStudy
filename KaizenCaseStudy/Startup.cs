@@ -1,3 +1,4 @@
+using KaizenCaseStudy.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -27,6 +28,7 @@ namespace KaizenCaseStudy
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddSingleton<INewsService, NewsService>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
