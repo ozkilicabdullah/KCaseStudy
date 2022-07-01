@@ -8,12 +8,18 @@ using System.Threading.Tasks;
 
 namespace KaizenCaseStudy.Controllers
 {
+    /// <summary>
+    /// Sorular
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
     public class QuestionController : ControllerBase
     {
         private readonly INewsService _newsService;
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="newsService"></param>
         public QuestionController(INewsService newsService)
         {
             _newsService = newsService;
@@ -97,7 +103,7 @@ namespace KaizenCaseStudy.Controllers
         /// <param name="Lang">Lang (1-> Türkçe , 2-> İngilizce)</param>
         /// <returns></returns>
         [HttpGet("GetNewsByName")]
-        public async Task<IActionResult> GetNewsByName(string Name, int Lang = 1)
+        public async Task<IActionResult> GetNewsByName(string Name = "FlyingFerries", int Lang = 1)
         {
             GeneralResponseModel<NewsResponseModel> responseModel = new();
             if (string.IsNullOrEmpty(Name))
