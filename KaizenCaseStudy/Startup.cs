@@ -10,7 +10,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace KaizenCaseStudy
@@ -32,7 +34,20 @@ namespace KaizenCaseStudy
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "KaizenCaseStudy", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "KaizenCaseStudy",
+                    Version = "v1",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Abdullah Özkýlýç",
+                        Email = "ozkilicabdllah@gmail.com"
+                    }
+                });
+                var xmlFile = $"{Assembly.GetEntryAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+
             });
         }
 

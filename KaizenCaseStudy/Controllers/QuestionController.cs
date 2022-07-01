@@ -19,15 +19,20 @@ namespace KaizenCaseStudy.Controllers
             _newsService = newsService;
         }
 
+        /// <summary>
+        /// Kampanya kodu oluştur.
+        /// </summary>
+        /// <param name="count">Kod adedi</param>
+        /// <param name="codeLength">Kod uzunluğu</param>
+        /// <returns></returns>
         [HttpGet("GenerateCampaignCode")]
-        public IActionResult GenerateCampaignCode()
+        public IActionResult GenerateCampaignCode(int count = 10, int codeLength = 8)
         {
             GeneralResponseModel<GenerateCampaignCodeResponseModel> responseModel = new()
             {
                 Data = new()
             };
-            responseModel.Data.Codes = Utils.GenerateCampaignCode();
-
+            responseModel.Data.Codes = Utils.GenerateCampaignCode(count, codeLength);
             if (responseModel.Data.Codes != null && responseModel.Data.Codes.Count > 0)
             {
                 responseModel.IsSuccess = true;
@@ -38,60 +43,71 @@ namespace KaizenCaseStudy.Controllers
             return BadRequest(responseModel);
         }
 
+        /// <summary>
+        /// Kod kontrolü 
+        /// </summary>
+        /// <param name="code">Kod</param>
+        /// <returns></returns>
         [HttpGet("CheckCode")]
         public IActionResult CheckCode(string code)
         {
-            GeneralResponseModel<bool> responseModel = new()
+            GeneralResponseModel<string> responseModel = new()
             {
-                Data = false,
-                ErrorMessages = new List<string>() { "Code is not valid!" }
+                ErrorMessages = new List<string>() { "The Code is not valid!" }
             };
-            responseModel.Data = Utils.CheckValidCode(code.ToUpper());
-            if (responseModel.Data)
+            if (code.Length > 0)
             {
-                responseModel.IsSuccess = true;
-                responseModel.ErrorMessages = null;
-                return Ok(responseModel);
+                responseModel.IsSuccess = Utils.CheckValidCode(code.ToUpper());
+                if (responseModel.IsSuccess)
+                {
+                    responseModel.ErrorMessages = null;
+                    responseModel.Data = "The Code is valid.";
+                    return Ok(responseModel);
+                }
             }
 
             return BadRequest(responseModel);
         }
 
-        [HttpGet("GetNewsByLang")]
         /// <summary>
-        /// İstenilen dildeki haberleri döner
+        /// Dil'e göre haberleri getirir
         /// </summary>
         /// <remarks>
-        /// 'Lang' parametresi => 1 : Türkçe , 2: İngilizce
+        /// 'Lang' parameter value => 1 : Türkçe , 2: İngilizce
         /// </remarks>
-        /// <param name="Lang">İstenilen dil (1-> Türkçe , 2-> İngilizce)</param>
+        /// <param name="Lang">Lang (1-> Türkçe , 2-> İngilizce)</param>
         /// <returns></returns>
-        public async Task<IActionResult> GetNewsByLang(int Lang)
+        [HttpGet("GetNewsByLang")]
+        public async Task<IActionResult> GetNewsByLang(int Lang = 1)
         {
-            GeneralResponseModel<List<NewsResponseModel>> responseModel = new();
-            responseModel = await _newsService.GetAllAsyncByLang(Lang);
+            GeneralResponseModel<List<NewsResponseModel>> responseModel = await _newsService.GetAllAsyncByLang(Lang);
             if (responseModel.IsSuccess)
                 return Ok(responseModel);
 
             return BadRequest(responseModel);
         }
 
-        [HttpGet("GetNewsByName")]
         /// <summary>
-        /// Haber detayını getir
+        /// Haber adına göre detay getir 
         /// </summary>
         /// <remarks>
-        /// 'Lang' parametresi => 1 : Türkçe , 2: İngilizce
+        /// 'Lang' parameter value => 1 : Türkçe , 2: İngilizce
         /// </remarks>
-        /// <param name="Name">Haberin adı</param>
-        /// <param name="Lang">İstenilen dil(1-> Türkçe , 2-> İngilizce)</param>
+        /// <param name="Name">Haber Adı</param>
+        /// <param name="Lang">Lang (1-> Türkçe , 2-> İngilizce)</param>
         /// <returns></returns>
-        public async Task<IActionResult> GetNewsByName(string Name, int Lang)
+        [HttpGet("GetNewsByName")]
+        public async Task<IActionResult> GetNewsByName(string Name, int Lang = 1)
         {
             GeneralResponseModel<NewsResponseModel> responseModel = new();
-            responseModel = await _newsService.GetAsyncByName(Name, Lang);
-            if (responseModel.IsSuccess)
-                return Ok(responseModel);
+            if (string.IsNullOrEmpty(Name))
+                responseModel.ErrorMessages = new List<string>() { "Name is required!" };
+            else
+            {
+                responseModel = await _newsService.GetAsyncByName(Name, Lang);
+                if (responseModel.IsSuccess)
+                    return Ok(responseModel);
+            }
 
             return BadRequest(responseModel);
         }

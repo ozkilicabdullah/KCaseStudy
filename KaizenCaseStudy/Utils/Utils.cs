@@ -10,20 +10,22 @@ namespace KaizenCaseStudy
 
         private const string keys = "ACDEFGHKLMNPRTXYZ234579";
 
-        //İndex değerlerinin basamak değeri  'tek' olanlar
-        private const string OddIndexes = "ADFHLNRXZ359";
-        //İndex değerlerinin basamak değeri  'ÇİFT' olanlar
-        private const string EventIndexes = "CEGKMPTY247";
-
-
-        // Kod oluşturulurken kullanılacak karaterler 1'den başlayarak  numaralandırılır.(soldan) Örn: A =1 , C=2,D=3,E=4 ....
-        // Bu numaralandırma sonucunda tek sayı değeri alanlar 'OddIndexes', çift sayı değeri alanlar 'EventIndexes' isimli değişkenlere atanmıştır.
-        // Kod oluşturulurken 1'den basamaklar sayılır ve basamak değeri tek çift olmasına göre 'OddIndexes' veya 'EventIndexes' isimli değişkenlerden rastgele bir karakter alır.
-        // Eğer basamak değeri çift ise  'OddIndexes' değişkeninden , eğer basamak değeri tek ise 'EventIndexes' değişkeninden rastgele bir karakter alınarak yeni oluşturulan kodun ilgili basamağına eklenir.
+        // Kod oluşturulurken kullanılacak karaterler 1'den başlayarak  numaralandırılır.(soldan) Örn: A=1,C=2,D=3,E=4 ....
+        // Bu numaralandırma sonucunda tek sayı değeri alanlar 'OddNumberIndexes', çift sayı değeri alanlar 'EvenNumberIndexes' isimli değişkenlere atanmıştır.
+        // Kod oluşturulurken 1'den başlayarak basamaklar sayılır ve basamak değeri tek çift olmasına göre 'OddNumberIndexes' veya 'EvenNumberIndexes' isimli değişkenlerden rastgele bir karakter alır.
+        // Eğer basamak değeri çift ise  'OddNumberIndexes' değişkeninden,
+        // eğer basamak değeri tek ise 'EvenNumberIndexes' değişkeninden
+        // rastgele bir karakter alınarak yeni oluşturulan kodun ilgili basamağına eklenir.  (Ters -> çift ise tek listesinden , tek ise çift listesinden)
         // Örneğin =>
-        // 8 basamaklı => CAEDGFKH  => 1. Basamak (1 tek sayıdır) 'EventIndexes' değişkeninde 'C' harfini almıştır
-        // 2. Basamak (2. çift saydır) 'OddIndexes'değişkeninden  'A' harfi alınmıştır.
+        // 8 basamaklı => CAEDGFKH  => 1. Basamak ('1' tek sayıdır) 'EvenNumberIndexes' değişkeninde 'C' harfini almıştır
+        // 2. Basamak ('2' çift saydır) 'OddNumberIndexes'değişkeninden  'A' harfi alınmıştır.
         // 3. , 4. ... diğer basamaklarda aynı şekilde devam etmektedir.
+
+        // Tek sayı değerini alanlar
+        private const string OddNumberIndexes = "ADFHLNRXZ359";
+        // Çift sayı değerini alanlar
+        private const string EvenNumberIndexes = "CEGKMPTY247";
+
 
         /// <summary>
         /// Kampanya kodu oluşturan fonksiyon
@@ -46,13 +48,13 @@ namespace KaizenCaseStudy
                     // Eğer çif ise indexdeğerinin basamak değeri 'tek' olan listeden random bir değer eklenir
                     if (x % 2 == 0)
                     {
-                        int rand = random.Next(OddIndexes.Length);
-                        newCode = string.Concat(newCode, OddIndexes[rand]);
+                        int rand = random.Next(OddNumberIndexes.Length);
+                        newCode = string.Concat(newCode, OddNumberIndexes[rand]);
                     }
                     else
                     {
-                        int rand = random.Next(EventIndexes.Length);
-                        newCode = string.Concat(newCode, EventIndexes[rand]);
+                        int rand = random.Next(EvenNumberIndexes.Length);
+                        newCode = string.Concat(newCode, EvenNumberIndexes[rand]);
                     }
                 }
                 codes.Add(newCode);
@@ -60,29 +62,32 @@ namespace KaizenCaseStudy
 
             return codes;
         }
-
+       
+        /// <summary>
+        /// Girilen kodun geçerliliğini kontrol eder.
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
         public static bool CheckValidCode(string code)
         {
+            // ilk basamğı 1 kabul ettiğimiz için i değişkeni '1' den başlatıldı
             for (int i = 1; i < code.Length + 1; i++)
             {
                 char[] charArray = code.ToCharArray();
                 string currentValue = charArray[i - 1].ToString();
                 if (i % 2 == 0)
                 {
-                    if (!OddIndexes.Contains(currentValue))
-                    {
+                    if (!OddNumberIndexes.Contains(currentValue))
+
                         return false;
-                    }
                 }
                 else
                 {
-                    if (!EventIndexes.Contains(currentValue))
-                    {
+                    if (!EvenNumberIndexes.Contains(currentValue))
                         return false;
-                    }
+
                 }
             }
-
             return true;
         }
     }

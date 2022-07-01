@@ -26,8 +26,14 @@ namespace KaizenCaseStudy.Services
         {
             return _configuration.GetValue<string>("DatabaseName");
         }
-
-        public async Task<GeneralResponseModel<NewsResponseModel>> GetAsyncByName(string Name, int lang)
+       
+        /// <summary>
+        /// Get News Bay Name
+        /// </summary>
+        /// <param name="Name">News name</param>
+        /// <param name="lang"> lang -> 1: Turkish , 2: English</param>
+        /// <returns></returns>
+        public async Task<GeneralResponseModel<NewsResponseModel>> GetAsyncByName(string Name, int lang = 1)
         {
             var responseModel = new GeneralResponseModel<NewsResponseModel>();
             try
@@ -54,8 +60,13 @@ namespace KaizenCaseStudy.Services
             }
             return responseModel;
         }
-
-        public async Task<GeneralResponseModel<List<NewsResponseModel>>> GetAllAsyncByLang(int lang)
+       
+        /// <summary>
+        /// Get All News By Lang
+        /// </summary>
+        /// <param name="lang"> lang -> 1: Turkish , 2: English</param>
+        /// <returns></returns>
+        public async Task<GeneralResponseModel<List<NewsResponseModel>>> GetAllAsyncByLang(int lang = 1)
         {
             var responseModel = new GeneralResponseModel<List<NewsResponseModel>>();
             try
